@@ -42,14 +42,18 @@ public class Sokoban : MonoBehaviour {
 	int cols;
 	Vector2 middleOffset=new Vector2();//offset for aligning the level to middle of the screen
 	int rockCount;//number of rocks in level
-	GameObject hero;//out triangular hero
+	GameObject hero;//hero/player character
 	Dictionary<GameObject,Vector2> occupants;//reference to rocks & hero
 	bool gameOver;
+	int playerXRotation;
+	int playerYRotation;
 
 	void Start () {
 		gameOver=false;
 		rockCount=0;
 		occupants=new Dictionary<GameObject, Vector2>();
+		playerXRotation = 0;
+		playerYRotation = 0;
 		ParseLevel();//load text file & parse our level 2d array
 		CreateLevel();//create the level based on the array
 
@@ -77,6 +81,7 @@ public class Sokoban : MonoBehaviour {
 			for (int j = 0; j < cols; j++) {
                 char val;
                 if (char.TryParse (nums[j], out val)){
+					val = char.ToUpper(val); //converts it to uppercase, as the PS level editor outputs in lower case. The level creator uses upper case.
                 	levelData[i,j] = val;
 				}
                 else{
@@ -140,6 +145,7 @@ public class Sokoban : MonoBehaviour {
 							occupants.Add(ground, new Vector2(i, j));//store the level indices of hero in dict
 						} else if (val==nothingTile)
                         {
+							/*
 							tile = new GameObject("tile" + i.ToString() + "_" + j.ToString());//create new tile
 							tile.transform.localScale = Vector2.one * (tileSize - 1);//set tile size
 							sr = tile.AddComponent<SpriteRenderer>();//add a sprite renderer
@@ -147,6 +153,7 @@ public class Sokoban : MonoBehaviour {
 							sr.sortingOrder = 0;
 							tile.transform.position = GetScreenPointFromLevelIndices(i, j);//place in scene based on level indices
 							occupants.Add(tile, new Vector2(i, j));//store the level indices of the empty tile in dict
+							*/
 						}
 					}
 				} 
@@ -157,33 +164,41 @@ public class Sokoban : MonoBehaviour {
 	void Update(){
 		if(gameOver)return;
 		ApplyUserInput();//check & use user input to move hero and rocks
-		if (keyPressInterval>=0)
+		if (keyPressInterval>0)
         {
 			keyPressInterval -= Time.deltaTime;
         }
 	}
 
+	//I think I'll just change the rotations using the built-in functions. I don't understand quaternions well.
     private void ApplyUserInput()
     {
 		if (Input.GetKey(userInputKeys[0]))
 		{
 			TryMoveHero(0);//up
+            playerXRotation = 180;
+			playerYRotation = 180;
 		}
 		else if (Input.GetKey(userInputKeys[1]))
 		{
 			TryMoveHero(1);//right
-			hero.transform.rotation=new Quaternion(0,0,0,0);
+			playerYRotation = 0;
 		}
 		else if (Input.GetKey(userInputKeys[2]))
 		{
-			TryMoveHero(2);//down
+            TryMoveHero(2);//down
+            playerXRotation = 90;
+			//playerYRotation = 180;
 		}
 		else if (Input.GetKey(userInputKeys[3]))
 		{
-			TryMoveHero(3);//left
-			hero.transform.rotation = new Quaternion(0, 180, 0, 0);
+            TryMoveHero(3);//left
+			playerXRotation = 0;
+			playerYRotation = 180;
 		}
 		else keyPressInterval = 0f; //if no key is pressed this frame, make it so the user can press any key next frame to move the player.
+
+		hero.transform.rotation = new Quaternion(playerXRotation, playerYRotation, 0, 0);
 
 
 		if (Input.GetKeyUp(KeyCode.R))
@@ -193,13 +208,14 @@ public class Sokoban : MonoBehaviour {
 	}
     private void TryMoveHero(int direction)
     {
-		//This if then statement makes sure the player can only move in the same direction every keyPressInterval seconds if they are holding a key down. (keyPressInterval is affected by deltaTime in update)
+		//This if then statement makes sure the player can only move in the same direction every keyPressInterval seconds if they are holding a key down. 
+		// (keyPressInterval is affected by deltaTime in update.)
 		//They can press the key again and again to move as fast as they want though.
-		// If the same key as last time is pressed
+		// If the same key as last time is pressed:
 		if (lastKeyPressed==direction)
         {
 			// and the key press interval has not gone to 0 yet.
-			if (keyPressInterval >= 0) return;
+			if (keyPressInterval > 0) return;
         }
 		lastKeyPressed = direction;
 		keyPressInterval = 0.2f;
@@ -212,39 +228,44 @@ public class Sokoban : MonoBehaviour {
 		heroPos=GetNextPositionAlong(oldHeroPos,direction);//find the next array position in given direction
 		
 		if(IsValidPosition(heroPos)){//check if it is a valid position & falls inside the level array
-			if(!IsOccuppiedByRock(heroPos)){//check if it is occuppied by a rock
+			Debug.Log("valid");
+			if (!IsOccuppiedByRock(heroPos)){//check if it is occuppied by a rock
+				Debug.Log("no rock");
 				//move hero
-				RemoveOccuppant(oldHeroPos);//reset old level data at old position
-				hero.transform.position=GetScreenPointFromLevelIndices((int)heroPos.x,(int)heroPos.y);
-				occupants[hero]=heroPos;
-				if(levelData[(int)heroPos.x,(int)heroPos.y]==dirtTile){//moving onto a ground tile
-					levelData[(int)heroPos.x,(int)heroPos.y]=heroTile;
-				}else if(levelData[(int)heroPos.x,(int)heroPos.y]==glassTile){//moving onto a glass tile
-					levelData[(int)heroPos.x,(int)heroPos.y]=heroOnGlassTile;
+				if (levelData[(int)heroPos.x, (int)heroPos.y] == dirtTile)
+				{//moving onto a ground tile
+					levelData[(int)heroPos.x, (int)heroPos.y] = heroTile;
 				}
+				else if (levelData[(int)heroPos.x, (int)heroPos.y] == glassTile)
+				{//moving onto a glass tile
+					levelData[(int)heroPos.x, (int)heroPos.y] = heroOnGlassTile;
+				}
+				hero.transform.position = GetScreenPointFromLevelIndices((int)heroPos.x, (int)heroPos.y);
+				occupants[hero] = heroPos;
+				RemoveOccuppant(oldHeroPos); //makes the tile the hero was on empty.
 			}else if (direction == 1 || direction ==3){
-				//we have a rock next to hero, check if it is empty on the other side of the rock
-				nextPos=GetNextPositionAlong(heroPos,direction);
+				Debug.Log("d1 or 3");
+				//nextPos holds where the rock will be pushed to.
+				nextPos =GetNextPositionAlong(heroPos,direction);
 				if(IsValidPosition(nextPos)){
-					if(!IsOccuppiedByDirt(nextPos)){//we found empty neighbor, so we need to move both rock & hero
+					if(!IsOccuppiedByDirt(nextPos)){//The next two tiles are empty, so we move the rock and the hero.
 						GameObject rock=GetOccupantAtPosition(heroPos);//find the rock at this position
 						if(rock==null)Debug.Log("no rock");
-						RemoveOccuppant(heroPos);//rock should be moved first before moving the hero
+						//move the rock
 						rock.transform.position=GetScreenPointFromLevelIndices((int)nextPos.x,(int)nextPos.y);
+						levelData[(int)nextPos.x, (int)nextPos.y] = rockTile;
 						occupants[rock]=nextPos;
-						if(levelData[(int)nextPos.x,(int)nextPos.y]==dirtTile){
-							levelData[(int)nextPos.x,(int)nextPos.y]=rockTile;
-						}else if(levelData[(int)nextPos.x,(int)nextPos.y]==glassTile){
-							levelData[(int)nextPos.x,(int)nextPos.y]=rockOnGlassTile;
-						}
-						RemoveOccuppant(oldHeroPos);//now move hero
+
+						//now move the hero
 						hero.transform.position=GetScreenPointFromLevelIndices((int)heroPos.x,(int)heroPos.y);
+						levelData[(int)heroPos.x, (int)heroPos.y] = heroTile;
 						occupants[hero]=heroPos;
-						if(levelData[(int)heroPos.x,(int)heroPos.y]==dirtTile){
-							levelData[(int)heroPos.x,(int)heroPos.y]=heroTile;
-						}else if(levelData[(int)heroPos.x,(int)heroPos.y]==glassTile){
-							levelData[(int)heroPos.x,(int)heroPos.y]=heroOnGlassTile;
-						}
+						//if(levelData[(int)heroPos.x,(int)heroPos.y]==dirtTile){
+						//	levelData[(int)heroPos.x,(int)heroPos.y]=heroTile;
+						//}else if(levelData[(int)heroPos.x,(int)heroPos.y]==glassTile){
+						//	levelData[(int)heroPos.x,(int)heroPos.y]=heroTile;
+						//}
+						RemoveOccuppant(oldHeroPos); //make the tile the player was on empty.
 					}
 				}
 			}
@@ -271,33 +292,41 @@ public class Sokoban : MonoBehaviour {
     private GameObject GetOccupantAtPosition(Vector2 heroPos)
     {//loop through the occupants to find the rock at given position
         GameObject rock;
-		foreach (KeyValuePair<GameObject, Vector2> pair in occupants)
-		{
-			if (pair.Value == heroPos)
-			{
-				rock = pair.Key;
-				return rock;
-			}
-		}
-		return null;
+        foreach (KeyValuePair<GameObject, Vector2> pair in occupants)
+        {
+            if (pair.Value == heroPos)
+            {
+                rock = pair.Key;
+                return rock;
+            }
+        }
+        return null;
     }
-	//Dirt tiles is being drawn by default.
 
+	//Dirt tiles is being drawn by default.
     private void RemoveOccuppant(Vector2 objPos)
     {
-        if(levelData[(int)objPos.x,(int)objPos.y]==heroTile||levelData[(int)objPos.x,(int)objPos.y]==rockTile){
-			levelData[(int)objPos.x,(int)objPos.y]=nothingTile;//rock moving from ground tile
-		}else if(levelData[(int)objPos.x,(int)objPos.y]==dirtTile){
-			levelData[(int)objPos.x,(int)objPos.y]=nothingTile;//hero moving from dirt
-		}else if(levelData[(int)objPos.x,(int)objPos.y]==rockOnGlassTile){
-			levelData[(int)objPos.x,(int)objPos.y]=glassTile;//rock moving from glass tile
-		}
+			GameObject empty = GetOccupantAtPosition(objPos);
+			levelData[(int)objPos.x, (int)objPos.y] = nothingTile;
+			if (empty)
+			{
+				//empty.transform.position = GetScreenPointFromLevelIndices((int)objPos.x, (int)objPos.y);
+				occupants.Remove(empty);
+				levelData[(int)objPos.x, (int)objPos.y] = nothingTile;//rock moving from ground tile
+				Destroy(empty);
+			}
+			else
+		    {
+				empty = new GameObject("tile" + objPos.x.ToString() + "_" + objPos.y.ToString());
+			}
     }
 
     private bool IsOccuppiedByDirt(Vector2 objPos)
-    {//check if there is a rock or dirt at given array position
+    {//check if there is dirt at given array position
         return (levelData[(int)objPos.x,(int)objPos.y]==dirtTile);
     }
+
+	//Why not just check if it is a rock tile?
 	private bool IsOccuppiedByRock(Vector2 objPos)
 	{//check if there is a rock or dirt at given array position
 		return (levelData[(int)objPos.x, (int)objPos.y] == rockTile);
@@ -306,7 +335,8 @@ public class Sokoban : MonoBehaviour {
 	private bool IsValidPosition(Vector2 objPos)
     {//check if the given indices fall within the array dimensions
         if(objPos.x>-1&&objPos.x<rows&&objPos.y>-1&&objPos.y<cols){
-			return levelData[(int)objPos.x,(int)objPos.y]!=invalidTile;
+			//return levelData[(int)objPos.x,(int)objPos.y]!=invalidTile;
+			return true;
 		}else return false;
     }
 

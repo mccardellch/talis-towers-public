@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -48,12 +49,20 @@ public class Sokoban : MonoBehaviour {
 	int playerXRotation;
 	int playerYRotation;
 
+	bool rockIsFalling;
+	public float rockFallInterval; //how long in between each frame of the rock falling.
+	float rockFallTimer; //is set equal to rockFallInterval.
+	Vector2 fallingRockPosition;
+	
 	void Start () {
-		gameOver=false;
-		rockCount=0;
+        gameOver = false;
+		rockIsFalling = false;
+		rockCount =0;
 		occupants=new Dictionary<GameObject, Vector2>();
 		playerXRotation = 0;
 		playerYRotation = 0;
+		rockFallInterval = 0.3f;
+		rockFallTimer = 0.3f;
 		ParseLevel();//load text file & parse our level 2d array
 		CreateLevel();//create the level based on the array
 
@@ -163,10 +172,18 @@ public class Sokoban : MonoBehaviour {
 	}
 	void Update(){
 		if(gameOver)return;
-		ApplyUserInput();//check & use user input to move hero and rocks
-		if (keyPressInterval>0)
+		if (!rockIsFalling)
+		{
+			ApplyUserInput();//check & use user input to move hero and rocks
+			if (keyPressInterval > 0)
+			{
+				keyPressInterval -= Time.deltaTime;
+			}
+		}
+		else
         {
-			keyPressInterval -= Time.deltaTime;
+			rockFallTimer -= Time.deltaTime;
+			if (rockFallTimer<0) {TryFallRock();}
         }
 	}
 
@@ -176,19 +193,20 @@ public class Sokoban : MonoBehaviour {
 		if (Input.GetKey(userInputKeys[0]))
 		{
 			TryMoveHero(0);//up
-            playerXRotation = 180;
-			playerYRotation = 180;
+            //playerXRotation = 180;
+			//playerYRotation = 180;
 		}
 		else if (Input.GetKey(userInputKeys[1]))
 		{
 			TryMoveHero(1);//right
+			playerXRotation = 0;
 			playerYRotation = 0;
 		}
 		else if (Input.GetKey(userInputKeys[2]))
 		{
             TryMoveHero(2);//down
-            playerXRotation = 90;
-			//playerYRotation = 180;
+            //playerXRotation = 180;
+			//playerYRotation = 0;
 		}
 		else if (Input.GetKey(userInputKeys[3]))
 		{
@@ -198,7 +216,7 @@ public class Sokoban : MonoBehaviour {
 		}
 		else keyPressInterval = 0f; //if no key is pressed this frame, make it so the user can press any key next frame to move the player.
 
-		hero.transform.rotation = new Quaternion(playerXRotation, playerYRotation, 0, 0);
+		hero.transform.eulerAngles = new Vector3(playerXRotation, playerYRotation, 0);
 
 
 		if (Input.GetKeyUp(KeyCode.R))
@@ -243,6 +261,7 @@ public class Sokoban : MonoBehaviour {
 				hero.transform.position = GetScreenPointFromLevelIndices((int)heroPos.x, (int)heroPos.y);
 				occupants[hero] = heroPos;
 				RemoveOccuppant(oldHeroPos); //makes the tile the hero was on empty.
+				CheckIfRockShouldFall(oldHeroPos);
 			}else if (direction == 1 || direction ==3){
 				Debug.Log("d1 or 3");
 				//nextPos holds where the rock will be pushed to.
@@ -272,9 +291,55 @@ public class Sokoban : MonoBehaviour {
 			CheckCompletion();//check if all rocks have reached glasss
 		}
     }
+    private void CheckIfRockShouldFall(Vector2 objPos)
+    {
+        Vector2 potentialRockPos = new Vector2((int)objPos.x - 1, (int)objPos.y);
+        if (!IsValidPosition(potentialRockPos)) return;
+
+        //Is the tile above the dirt just removed a rock?
+        if (levelData[(int)potentialRockPos.x, (int)potentialRockPos.y] == rockTile)
+        {
+			rockIsFalling = true;
+			fallingRockPosition = potentialRockPos;
+        }
+    }
+
+	private void TryFallRock()
+    {
+		Vector2 potentialNewPos = fallingRockPosition;
+        potentialNewPos.x += 1;
+		rockFallTimer = rockFallInterval;
+		//destroy the rock if it is trying to move out of bounds
+		if (!IsValidPosition(potentialNewPos))
+        {
+            rockIsFalling = false;
+			levelData[(int)fallingRockPosition.x, (int)fallingRockPosition.y] = nothingTile;
+			GameObject rock = GetOccupantAtPosition(fallingRockPosition);//find the rock at this position
+			Destroy(rock);
+			return;
+		}
+		//If the tile below the rock is empty, make it fall.
+		if (levelData[(int)fallingRockPosition.x + 1, (int)fallingRockPosition.y] == nothingTile)
+		{
+			levelData[(int)fallingRockPosition.x, (int)fallingRockPosition.y] = nothingTile;
+			GameObject rock = GetOccupantAtPosition(fallingRockPosition);//find the rock at this position
+			fallingRockPosition.x += 1;
+			rock.transform.position = GetScreenPointFromLevelIndices((int)fallingRockPosition.x, (int)fallingRockPosition.y);
+			levelData[(int)fallingRockPosition.x, (int)fallingRockPosition.y] = rockTile;
+			occupants[rock] = fallingRockPosition;
+		}
+		else
+        {
+            rockIsFalling = false;
+			levelData[(int)fallingRockPosition.x, (int)fallingRockPosition.y] = nothingTile;
+			//Destroy the rock when it hits the dirt
+			GameObject rock = GetOccupantAtPosition(fallingRockPosition);//find the rock at this position
+			Destroy(rock);
+        }
+	}
 
 	//It would be more explicit to say glass tiles shattered, though I don't think this could change 
-    private void CheckCompletion()
+	private void CheckCompletion()
     {
         int rocksOnglass=0;
 		for (int i = 0; i < rows; i++) {
@@ -317,7 +382,7 @@ public class Sokoban : MonoBehaviour {
 			}
 			else
 		    {
-				empty = new GameObject("tile" + objPos.x.ToString() + "_" + objPos.y.ToString());
+				//empty = new GameObject("tile" + objPos.x.ToString() + "_" + objPos.y.ToString());
 			}
     }
 

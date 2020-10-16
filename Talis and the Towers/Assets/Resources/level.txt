@@ -1,5 +1,0 @@
-D,D,D,D,D,D,D
-D,D,D,N,N,R,D
-D,H,D,D,D,D,D
-D,D,D,D,D,D,D
-D,D,D,G,D,D,D

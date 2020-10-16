@@ -162,7 +162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de58d149f2530274c860c566cd9d3dd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelName: level
+  levelName: level2
   tileSize: 50
   levelNames: []
   invalidTile: 0

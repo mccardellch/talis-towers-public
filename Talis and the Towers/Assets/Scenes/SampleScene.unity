@@ -162,15 +162,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de58d149f2530274c860c566cd9d3dd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelName: level2
+  levelName: WorldMap
   tileSize: 50
-  levelNames: []
+  levelNames:
+  - level1
+  - level2
   invalidTile: 0
   dirtTile: 68
   glassTile: 71
   heroTile: 72
   rockTile: 82
   nothingTile: 78
+  warpTile: 87
   heroOnGlassTile: 0
   rockOnGlassTile: 0
   keyPressInterval: 0.2

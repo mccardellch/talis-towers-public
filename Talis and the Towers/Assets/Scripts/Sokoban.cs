@@ -22,6 +22,7 @@ public class Sokoban : MonoBehaviour {
 	public char heroTile;
 	public char rockTile;
 	public char nothingTile;
+	public char warpTile;
 	public char heroOnGlassTile;
 	public char rockOnGlassTile;
 	public float keyPressInterval;
@@ -108,6 +109,8 @@ public class Sokoban : MonoBehaviour {
 		GameObject rock;
 		GameObject glass;
 		GameObject ground;
+		GameObject warp;
+		int warpind = 0;
 		int glassCount=0;
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
@@ -152,6 +155,19 @@ public class Sokoban : MonoBehaviour {
 							sr.sortingOrder = 0;
 							ground.transform.position = GetScreenPointFromLevelIndices(i, j);
 							occupants.Add(ground, new Vector2(i, j));//store the level indices of hero in dict
+						} else if (val == warpTile)
+						{//Warp tile
+							if (warpind < levelNames.Length)
+							{
+								warp = new GameObject("Warp_" + levelNames[warpind]);//create new tile
+								warp.transform.localScale = Vector2.one * (tileSize - 1);
+								sr = warp.AddComponent<SpriteRenderer>();
+								sr.sprite = glassSprite;
+								sr.sortingOrder = 0;
+								warp.transform.position = GetScreenPointFromLevelIndices(i, j);
+								occupants.Add(warp, new Vector2(i, j));//store the level indices of hero in dict
+								warpind++;
+							}
 						} else if (val==nothingTile)
                         {
 							/*
@@ -170,6 +186,15 @@ public class Sokoban : MonoBehaviour {
         }
 		if(rockCount>glassCount)Debug.LogError("there are more rocks than glass");
 	}
+	void ClearLevel()
+    {
+		foreach (KeyValuePair<GameObject, Vector2> occupant in occupants)
+		{
+			Destroy(occupant.Key);
+		}
+		occupants.Clear();
+	}
+
 	void Update(){
 		if(gameOver)return;
 		if (!rockIsFalling)
@@ -288,6 +313,7 @@ public class Sokoban : MonoBehaviour {
 					}
 				}
 			}
+			CheckWarp(); //check if the player has stepped on a warp tile
 			CheckCompletion();//check if all rocks have reached glasss
 		}
     }
@@ -349,12 +375,28 @@ public class Sokoban : MonoBehaviour {
 				}
 			}
 		}
-		if(rocksOnglass==rockCount){
+		if(rocksOnglass==rockCount && rockCount > 0){
 			Debug.Log("level complete");
 			gameOver=true;
 		}
     }
-    private GameObject GetOccupantAtPosition(Vector2 heroPos)
+
+	//It would be more explicit to say glass tiles shattered, though I don't think this could change 
+	private void CheckWarp()
+	{
+		Vector2 HeroPos;
+		occupants.TryGetValue(hero, out HeroPos);
+		if (IsOccuppiedByWarp(HeroPos))
+        {
+			levelName = GetOccupantAtPosition(HeroPos).name;
+			levelName = levelName.Remove(0, 5);
+			ClearLevel();//remove all the objects from the current level
+			ParseLevel();//load text file & parse our level 2d array
+			CreateLevel();//create the new level based on the array
+		}
+	}
+
+	private GameObject GetOccupantAtPosition(Vector2 heroPos)
     {//loop through the occupants to find the rock at given position
         GameObject rock;
         foreach (KeyValuePair<GameObject, Vector2> pair in occupants)
@@ -395,6 +437,11 @@ public class Sokoban : MonoBehaviour {
 	private bool IsOccuppiedByRock(Vector2 objPos)
 	{//check if there is a rock or dirt at given array position
 		return (levelData[(int)objPos.x, (int)objPos.y] == rockTile);
+	}
+
+	private bool IsOccuppiedByWarp(Vector2 objPos)
+	{//check if there is a warp tile at given array position
+		return (levelData[(int)objPos.x, (int)objPos.y] == warpTile);
 	}
 
 	private bool IsValidPosition(Vector2 objPos)

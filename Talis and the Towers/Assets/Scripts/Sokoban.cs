@@ -267,6 +267,8 @@ public class Sokoban : MonoBehaviour {
 		Vector2 heroPos;
 		Vector2 oldHeroPos;
 		Vector2 nextPos;
+
+#warning NullReferenceException here when trying to move player to black spot
 		occupants.TryGetValue(hero,out oldHeroPos);
 		heroPos=GetNextPositionAlong(oldHeroPos,direction);//find the next array position in given direction
 		
@@ -344,9 +346,11 @@ public class Sokoban : MonoBehaviour {
 			Destroy(rock);
 			return;
 		}
+
 		//If the tile below the rock is empty, make it fall.
 		if (levelData[(int)fallingRockPosition.x + 1, (int)fallingRockPosition.y] == nothingTile)
 		{
+			//rockIsFalling = true; // set rock is falling to true. - harry
 			levelData[(int)fallingRockPosition.x, (int)fallingRockPosition.y] = nothingTile;
 			GameObject rock = GetOccupantAtPosition(fallingRockPosition);//find the rock at this position
 			fallingRockPosition.x += 1;
@@ -389,7 +393,9 @@ public class Sokoban : MonoBehaviour {
 		if (IsOccuppiedByWarp(HeroPos))
         {
 			levelName = GetOccupantAtPosition(HeroPos).name;
-			levelName = levelName.Remove(0, 5);
+
+#warning getting ArugmentOutOfRangeException at code below
+			levelName = levelName.Remove(0, 5); 
 			ClearLevel();//remove all the objects from the current level
 			ParseLevel();//load text file & parse our level 2d array
 			CreateLevel();//create the new level based on the array

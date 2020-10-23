@@ -343,9 +343,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelName: WorldMap
   tileSize: 50
-  levelNames:
-  - level1
-  - level2
   invalidTile: 0
   dirtTile: 68
   glassTile: 71
@@ -354,15 +351,20 @@ MonoBehaviour:
   nothingTile: 78
   warpTile: 87
   heroOnGlassTile: 0
-  rockOnGlassTile: 0
+  shatteredGlassTile: 0
   keyPressInterval: 0.2
   glassColor: {r: 0, g: 0, b: 0, a: 0}
   dirtSprite: {fileID: 21300000, guid: 2de52e0652dc31442b1f001c1eacdd39, type: 3}
-  heroSprite: {fileID: 21300000, guid: a5cd5b25667fec845b0c54fefa6997dd, type: 3}
+  heroSprite: {fileID: 21300000, guid: edc4f9d44c004994e94f0e689b1df734, type: 3}
   rockSprite: {fileID: 21300000, guid: a05b44b9e55c9584a822cc5798cd29bf, type: 3}
   glassSprite: {fileID: 21300000, guid: e252c47c97c4d9446ae97f55f44376cd, type: 3}
   nothingSprite: {fileID: 21300000, guid: 9b0a04cd820a5534c860b793d79cc749, type: 3}
   userInputKeys: 11010000130100001201000014010000
+  levels: []
+  levelNames:
+  - level1
+  - level2
+  - level3
   rockFallInterval: 0
 --- !u!20 &519420031
 Camera:

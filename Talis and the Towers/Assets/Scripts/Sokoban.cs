@@ -45,6 +45,7 @@ public class Sokoban : MonoBehaviour
     public Sprite rockSprite;
     public Sprite glassSprite;
     public Sprite nothingSprite;
+    public Sprite incompleteWarpSprite;
 
     //the user input keys
     public KeyCode[] userInputKeys;//up, right, down, left
@@ -200,7 +201,7 @@ public class Sokoban : MonoBehaviour
                                 warp = new GameObject("Warp_" + levels[warpind].name);//create new tile
                                 warp.transform.localScale = Vector2.one * (tileSize - 1);
                                 sr = warp.AddComponent<SpriteRenderer>();
-                                sr.sprite = glassSprite;
+                                sr.sprite = incompleteWarpSprite;
                                 if (levels[warpind].complete)
                                 {
                                     sr.color = Color.red;

@@ -17,6 +17,10 @@ public class Level : MonoBehaviour
 //It is on GitHub with a MIT license.
 public class Sokoban : MonoBehaviour
 {
+    // to play the sfx
+    public AudioSource dirt_breaking;
+    public AudioSource rock_falling;
+
     public string levelName;//name of the text file in resources folder
     public float tileSize;//we are using square tiles tileSize x tileSize
 
@@ -325,6 +329,9 @@ public class Sokoban : MonoBehaviour
                 {//moving onto a ground tile
                     levelData[(int)heroPos.x, (int)heroPos.y] = heroTile;
                     RemoveOccuppant(heroPos); //removes the dirt on the tile the player is moving to.
+
+                    // play the dirt sfx
+                    dirt_breaking.Play();
                 }
                 else if (levelData[(int)heroPos.x, (int)heroPos.y] == glassTile)
                 {//moving onto a glass tile
@@ -437,6 +444,10 @@ public class Sokoban : MonoBehaviour
             levelData[(int)fallingRockPosition.x, (int)fallingRockPosition.y] = nothingTile;
             //Destroy the rock when it hits the dirt
             GameObject rock = GetOccupantAtPosition(fallingRockPosition);//find the rock at this position
+
+            // play the rock falling sfx
+            rock_falling.Play();
+
             Destroy(rock, 0.2f);
         }
     }

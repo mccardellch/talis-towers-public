@@ -358,7 +358,7 @@ MonoBehaviour:
   shatteredGlassTile: 0
   keyPressInterval: 0.2
   glassColor: {r: 0, g: 0, b: 0, a: 0}
-  dirtSprite: {fileID: 21300000, guid: 2de52e0652dc31442b1f001c1eacdd39, type: 3}
+  dirtSprite: {fileID: 21300000, guid: efeea8983134ec94ab65861203c4c21d, type: 3}
   heroSprite: {fileID: 21300000, guid: edc4f9d44c004994e94f0e689b1df734, type: 3}
   rockSprite: {fileID: 21300000, guid: a05b44b9e55c9584a822cc5798cd29bf, type: 3}
   glassSprite: {fileID: 21300000, guid: e252c47c97c4d9446ae97f55f44376cd, type: 3}

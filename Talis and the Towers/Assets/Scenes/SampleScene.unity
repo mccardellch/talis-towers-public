@@ -367,6 +367,7 @@ MonoBehaviour:
   userInputKeys: 11010000130100001201000014010000
   levels: []
   levelNames:
+  - WorldMap
   - level1
   - level2
   - level3

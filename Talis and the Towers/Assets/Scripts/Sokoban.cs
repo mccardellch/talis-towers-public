@@ -60,7 +60,7 @@ public class Sokoban : MonoBehaviour
 
     public Level[] levels; //stores the name of levels and whether they have been completed.
     public string[] levelNames; //stores the names of all levels in a way you can set from the editor.
-    int currentLevelIndex;
+    int currentLevelIndex = 0;
 
     bool gameOver;
     //It'd be better to make something like player.rotDegrees, but I don't want to look up how to do that in C# atm.
@@ -81,6 +81,7 @@ public class Sokoban : MonoBehaviour
 
     void Start()
     {
+        
         gameOver = false;
         rockIsFalling = false;
         glassCount = 0;
@@ -104,6 +105,7 @@ public class Sokoban : MonoBehaviour
     //Parse Level key: D for Dirt, P for Player, R for Rock, N for Nothing. Unimplemented: 1 for Enemy 1, 2 for Enemy 2
     void ParseLevel()
     {
+        levelName = levels[currentLevelIndex].name;
         TextAsset textFile = Resources.Load(levelName) as TextAsset;
         string[] lines = textFile.text.Split(new[] { '\r', '\n' }, System.StringSplitOptions.RemoveEmptyEntries);//split by new line, return
         string[] nums = lines[0].Split(new[] { ',' });//split by ,
@@ -140,7 +142,8 @@ public class Sokoban : MonoBehaviour
         GameObject glass;
         GameObject ground;
         GameObject warp;
-        int warpind = 0;
+        glassCount = 0;
+        int warpind = 1;
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < cols; j++)
@@ -464,17 +467,21 @@ public class Sokoban : MonoBehaviour
                 if (levelData[i, j] == shatteredGlassTile)
                 {
                     shatteredGlass++;
-                    UnityEngine.Debug.Log("level complete");
                     levels[currentLevelIndex].complete = true;
                 }
             }
         }
         //If the level is complete, then load the world map.
-        if (shatteredGlass == glassCount && glassCount > 0)
+        if (shatteredGlass == glassCount && currentLevelIndex != 0)
         {
             UnityEngine.Debug.Log("level complete");
-            Invoke("RestartLevel", 0.5f); //If the level is complete, wait half a second and then send the player back to the world map.
-                                          //restart level just warps you back to the world map atm.
+            //Invoke("RestartLevel", 0.5f); //If the level is complete, wait half a second and then send the player back to the world map.
+            //restart level just warps you back to the world map atm.
+            glassCount = 0;
+            currentLevelIndex = 0;
+            ClearLevel();//remove all the objects from the current level
+            ParseLevel();//load text file & parse our level 2d array
+            CreateLevel();//create the new level based on the array
         }
     }
 
@@ -602,6 +609,9 @@ public class Sokoban : MonoBehaviour
     public void RestartLevel()
     {
         //Application.LoadLevel(0);
-        SceneManager.LoadScene(0);
+        //SceneManager.LoadScene(0);
+        ClearLevel();//remove all the objects from the current level
+        ParseLevel();//load text file & parse our level 2d array
+        CreateLevel();//create the new level based on the array
     }
 }

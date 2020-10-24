@@ -244,6 +244,23 @@ public class Sokoban : MonoBehaviour
     void Update()
     {
         if (gameOver) return;
+        Vector2 trueHeroPos;
+        Vector2 trueRockPos;
+        occupants.TryGetValue(hero, out trueHeroPos);
+        hero.transform.position = new Vector2(UnityEngine.Mathf.Lerp(hero.transform.position.x, GetScreenPointFromLevelIndices((int)trueHeroPos.x, (int)trueHeroPos.y).x, .05f), UnityEngine.Mathf.Lerp(hero.transform.position.y, GetScreenPointFromLevelIndices((int)trueHeroPos.x, (int)trueHeroPos.y).y, .05f));
+   
+        foreach (KeyValuePair<GameObject, Vector2> occupant in occupants)
+        {
+            if (occupant.Key != null)
+            {
+                if (occupant.Key.name[0] == 'r')
+                {
+                    occupants.TryGetValue(occupant.Key, out trueRockPos);
+                    occupant.Key.transform.position = new Vector2(UnityEngine.Mathf.Lerp(occupant.Key.transform.position.x, GetScreenPointFromLevelIndices((int)trueRockPos.x, (int)trueRockPos.y).x, .05f), UnityEngine.Mathf.Lerp(occupant.Key.transform.position.y, GetScreenPointFromLevelIndices((int)trueRockPos.x, (int)trueRockPos.y).y, .05f));
+                }
+            } 
+        }
+        
         if (!rockIsFalling)
         {
             ApplyUserInput();//check & use user input to move hero and rocks
@@ -341,7 +358,7 @@ public class Sokoban : MonoBehaviour
                 {//moving onto a glass tile
                     levelData[(int)heroPos.x, (int)heroPos.y] = heroOnGlassTile;
                 }
-                hero.transform.position = GetScreenPointFromLevelIndices((int)heroPos.x, (int)heroPos.y);
+                //hero.transform.position = GetScreenPointFromLevelIndices((int)heroPos.x, (int)heroPos.y);
                 occupants[hero] = heroPos;
                 RemoveOccuppant(oldHeroPos); //makes the tile the hero was on empty.
                 CheckIfRockShouldFall(oldHeroPos); //check if the dirt tile the player moved would make a rock fall.
@@ -422,7 +439,7 @@ public class Sokoban : MonoBehaviour
             levelData[(int)fallingRockPosition.x, (int)fallingRockPosition.y] = nothingTile;
             GameObject rock = GetOccupantAtPosition(fallingRockPosition);//find the rock at this position
             fallingRockPosition.x += 1;
-            rock.transform.position = GetScreenPointFromLevelIndices((int)fallingRockPosition.x, (int)fallingRockPosition.y);
+            //rock.transform.position = GetScreenPointFromLevelIndices((int)fallingRockPosition.x, (int)fallingRockPosition.y);
             levelData[(int)fallingRockPosition.x, (int)fallingRockPosition.y] = rockTile;
             occupants[rock] = fallingRockPosition;
         }
@@ -433,7 +450,7 @@ public class Sokoban : MonoBehaviour
             levelData[(int)fallingRockPosition.x + 1, (int)fallingRockPosition.y] = shatteredGlassTile;
 
             GameObject rock = GetOccupantAtPosition(fallingRockPosition);//find the rock at this position
-            rock.transform.position = GetScreenPointFromLevelIndices((int)fallingRockPosition.x, (int)fallingRockPosition.y);
+            //rock.transform.position = GetScreenPointFromLevelIndices((int)fallingRockPosition.x, (int)fallingRockPosition.y);
             levelData[(int)fallingRockPosition.x, (int)fallingRockPosition.y] = nothingTile;
             occupants[rock] = fallingRockPosition;
             rock.GetComponent<SpriteRenderer>().color = Color.red;

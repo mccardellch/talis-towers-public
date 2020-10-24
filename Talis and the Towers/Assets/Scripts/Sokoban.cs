@@ -474,15 +474,21 @@ public class Sokoban : MonoBehaviour
         //If the level is complete, then load the world map.
         if (shatteredGlass == glassCount && currentLevelIndex != 0)
         {
-            UnityEngine.Debug.Log("level complete");
+
             //Invoke("RestartLevel", 0.5f); //If the level is complete, wait half a second and then send the player back to the world map.
             //restart level just warps you back to the world map atm.
-            glassCount = 0;
-            currentLevelIndex = 0;
-            ClearLevel();//remove all the objects from the current level
-            ParseLevel();//load text file & parse our level 2d array
-            CreateLevel();//create the new level based on the array
+            Invoke("LevelComplete", 0.5f); //If the level is complete, wait half a second and then send the player back to the world map.
         }
+    }
+
+    private void LevelComplete()
+    {
+        glassCount = 0;
+        currentLevelIndex = 0;
+        UnityEngine.Debug.Log("level complete");
+        ClearLevel();//remove all the objects from the current level
+        ParseLevel();//load text file & parse our level 2d array
+        CreateLevel();//create the new level based on the array
     }
 
 

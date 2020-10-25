@@ -451,7 +451,7 @@ MonoBehaviour:
   keyPressInterval: 0.2
   glassColor: {r: 0, g: 0, b: 0, a: 0}
   dirtSprite: {fileID: 21300000, guid: efeea8983134ec94ab65861203c4c21d, type: 3}
-  heroSprite: {fileID: 21300000, guid: edc4f9d44c004994e94f0e689b1df734, type: 3}
+  heroBlock: {fileID: 3756469499009107029, guid: 7038ba7c92791614ea6752dd359f3062, type: 3}
   rockBlock: {fileID: 5244155351154864330, guid: 8d22178088b995047a6b8414df66b49d, type: 3}
   glassBlock: {fileID: 45265408147765129, guid: ba2907c5d40902647aabcf1d167356dd, type: 3}
   nothingSprite: {fileID: 21300000, guid: 9b0a04cd820a5534c860b793d79cc749, type: 3}

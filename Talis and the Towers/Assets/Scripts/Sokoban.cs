@@ -41,7 +41,7 @@ public class Sokoban : MonoBehaviour
 
     //sprites for different tiles
     public Sprite dirtSprite;
-    public Sprite heroSprite;
+    public GameObject heroBlock;
     public GameObject rockBlock;
     public GameObject glassBlock;
     public Sprite nothingSprite;
@@ -169,12 +169,10 @@ public class Sokoban : MonoBehaviour
                     {
                         if (val == heroTile)
                         {//the hero tile
-                            hero = new GameObject("hero");
+                            hero = Instantiate(heroBlock);
                             hero.transform.localScale = Vector2.one * (tileSize - 1);
-                            sr = hero.AddComponent<SpriteRenderer>();
-                            sr.sprite = heroSprite;
-                            sr.sortingOrder = 1;//hero needs to be over the ground tile
-                                                //sr.color=Color.red;
+                            sr = hero.GetComponent<SpriteRenderer>();
+                            sr.sortingOrder = 1;
                             hero.transform.position = GetScreenPointFromLevelIndices(i, j);
                             occupants.Add(hero, new Vector2(i, j));//store the level indices of hero in dict
                         }

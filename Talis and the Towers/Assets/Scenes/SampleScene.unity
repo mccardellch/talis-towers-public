@@ -452,10 +452,12 @@ MonoBehaviour:
   glassColor: {r: 0, g: 0, b: 0, a: 0}
   dirtSprite: {fileID: 21300000, guid: efeea8983134ec94ab65861203c4c21d, type: 3}
   heroSprite: {fileID: 21300000, guid: edc4f9d44c004994e94f0e689b1df734, type: 3}
-  rockSprite: {fileID: 21300000, guid: a05b44b9e55c9584a822cc5798cd29bf, type: 3}
-  glassSprite: {fileID: 21300000, guid: 2d36d3f6916ba934790a2085c30a609d, type: 3}
+  rockBlock: {fileID: 5244155351154864330, guid: 8d22178088b995047a6b8414df66b49d, type: 3}
+  glassBlock: {fileID: 45265408147765129, guid: ba2907c5d40902647aabcf1d167356dd, type: 3}
   nothingSprite: {fileID: 21300000, guid: 9b0a04cd820a5534c860b793d79cc749, type: 3}
   incompleteWarpSprite: {fileID: 21300000, guid: 4528a085d59de9543be7fe8d3c944376, type: 3}
+  warpBlock: {fileID: 7724119164907283455, guid: ac67d7f6161f85b498a695d1798fbd81, type: 3}
+  completeWarpBlock: {fileID: 8015926831050131109, guid: aacea565a20ba3546a7bfd657ffe0b1b, type: 3}
   userInputKeys: 11010000130100001201000014010000
   levels: []
   levelNames:

@@ -354,6 +354,9 @@ public class Sokoban : MonoBehaviour
                     levelData[(int)heroPos.x, (int)heroPos.y] = heroTile;
                     RemoveOccuppant(heroPos); //removes the dirt on the tile the player is moving to.
 
+                    // play attack animation
+                    //animator.SetTrigger("Attack");
+
                     // play the dirt sfx
                     dirt_breaking.Play();
                 }

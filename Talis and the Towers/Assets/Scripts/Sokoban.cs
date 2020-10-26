@@ -287,25 +287,25 @@ public class Sokoban : MonoBehaviour
     {
         //Changes which way the player is facing based on the key pressed, stored in a variable and shown through their rotation.
         //Player moves with arrow keys.
-        if (Input.GetKey(userInputKeys[0]))
+        if (Input.GetKeyDown("w") || Input.GetKeyDown("up"))
         {
             TryMoveHero(0);//up
             //hero.transform.up = Vector3.left;
             playerFacing = playerDirections.up;
         }
-        else if (Input.GetKey(userInputKeys[1]))
+        else if (Input.GetKeyDown("d") || Input.GetKeyDown("right"))
         {
             TryMoveHero(1);//right
             hero.transform.right = Vector3.right;
             playerFacing = playerDirections.right;
         }
-        else if (Input.GetKey(userInputKeys[2]))
+        else if (Input.GetKeyDown("s") || Input.GetKeyDown("down"))
         {
             TryMoveHero(2);//down
             //hero.transform.up = Vector3.right;
             playerFacing = playerDirections.down;
         }
-        else if (Input.GetKey(userInputKeys[3]))
+        else if (Input.GetKeyDown("a") || Input.GetKeyDown("left"))
         {
             TryMoveHero(3);//left
             hero.transform.right = Vector3.left;
@@ -316,9 +316,14 @@ public class Sokoban : MonoBehaviour
         //hero.transform.right = Vector3.forward * playerRotDegrees;
 
         //R sends the player back to the world map. We may just make it restart the level, though this is not important atm.
-        if (Input.GetKeyUp(KeyCode.R))
+        if (Input.GetKeyDown("r"))
         {
             RestartLevel();
+        }
+
+        if (Input.GetKeyDown("t"))
+        {
+            print("pause level // t");
         }
     }
     private void TryMoveHero(int direction)

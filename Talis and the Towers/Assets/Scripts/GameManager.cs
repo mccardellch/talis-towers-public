@@ -19,10 +19,12 @@ public class GameManager : MonoBehaviour
 	private bool blink; // bool for switching blink
 	private bool gameStarted; // bool to check if game started
 	private TimeManager timeManager; // get TimeManager object
+	private Sokoban sokoban;
 
 	void Awake()
 	{
 		timeManager = GetComponent<TimeManager>();
+		sokoban = GetComponent<Sokoban>();
 	}
 
 	// Start is called before the first frame update
@@ -58,12 +60,12 @@ public class GameManager : MonoBehaviour
 
 			//var textColor = beatBestTime ? "#FF0" : "#FFF";
 
-			levelText.text = "LEVEL " + currentLevel;
+			levelText.text = "LEVEL " + sokoban.levelName;
 		}
 		else
 		{
 			timeElapsed += Time.deltaTime;
-			levelText.text = "LEVEL " + FormatTime(timeElapsed);
+			//levelText.text = "LEVEL " + FormatTime(timeElapsed);
 		}
 	}
 
@@ -83,4 +85,9 @@ public class GameManager : MonoBehaviour
 
 		return string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
 	}
+
+	void PauseGame()
+    {
+
+    }
 }

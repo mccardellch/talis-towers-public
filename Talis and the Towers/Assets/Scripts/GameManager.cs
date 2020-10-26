@@ -60,12 +60,11 @@ public class GameManager : MonoBehaviour
 
 			//var textColor = beatBestTime ? "#FF0" : "#FFF";
 
-			levelText.text = "LEVEL " /*+ sokoban.levelName*/;
+			levelText.text = "LEVEL: " + sokoban.levelName;
 		}
 		else
 		{
 			timeElapsed += Time.deltaTime;
-			//levelText.text = "LEVEL " + FormatTime(timeElapsed);
 		}
 	}
 

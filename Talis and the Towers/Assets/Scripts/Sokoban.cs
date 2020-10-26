@@ -320,11 +320,6 @@ public class Sokoban : MonoBehaviour
         {
             RestartLevel();
         }
-
-        if (Input.GetKeyDown("t"))
-        {
-            print("pause level // t");
-        }
     }
     private void TryMoveHero(int direction)
     {

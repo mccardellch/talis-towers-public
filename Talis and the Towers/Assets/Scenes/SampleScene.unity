@@ -481,7 +481,6 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
-  - component: {fileID: 519420030}
   - component: {fileID: 519420034}
   - component: {fileID: 519420033}
   m_Layer: 0
@@ -499,49 +498,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
---- !u!114 &519420030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de58d149f2530274c860c566cd9d3dd2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dirt_breaking: {fileID: 519420033}
-  rock_falling: {fileID: 519420034}
-  levelName: WorldMap
-  tileSize: 50
-  invalidTile: 0
-  dirtTile: 68
-  glassTile: 71
-  heroTile: 72
-  rockTile: 82
-  nothingTile: 78
-  warpTile: 87
-  heroOnGlassTile: 0
-  shatteredGlassTile: 0
-  keyPressInterval: 0.2
-  glassColor: {r: 0, g: 0, b: 0, a: 0}
-  dirtSprite: {fileID: 21300000, guid: efeea8983134ec94ab65861203c4c21d, type: 3}
-  heroBlock: {fileID: 3756469499009107029, guid: 7038ba7c92791614ea6752dd359f3062, type: 3}
-  rockBlock: {fileID: 5244155351154864330, guid: 8d22178088b995047a6b8414df66b49d, type: 3}
-  glassBlock: {fileID: 45265408147765129, guid: ba2907c5d40902647aabcf1d167356dd, type: 3}
-  nothingSprite: {fileID: 21300000, guid: 9b0a04cd820a5534c860b793d79cc749, type: 3}
-  incompleteWarpSprite: {fileID: 21300000, guid: 4528a085d59de9543be7fe8d3c944376, type: 3}
-  warpBlock: {fileID: 7724119164907283455, guid: ac67d7f6161f85b498a695d1798fbd81, type: 3}
-  completeWarpBlock: {fileID: 8015926831050131109, guid: aacea565a20ba3546a7bfd657ffe0b1b, type: 3}
-  userInputKeys: 11010000130100001201000014010000
-  levels: []
-  levelNames:
-  - WorldMap
-  - level1
-  - level2
-  - level3
-  rockFallInterval: 0
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -808,7 +764,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &571947491
 RectTransform:
   m_ObjectHideFlags: 0
@@ -831,7 +787,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -510.84012, y: -158.40128}
+  m_SizeDelta: {x: -506.73883, y: -154.12985}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &571947492
 MonoBehaviour:
@@ -846,7 +802,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.6509804}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1055,7 +1011,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -35.27, y: -105.11}
+  m_AnchoredPosition: {x: -40.6, y: -112.2}
   m_SizeDelta: {x: 179.65298, y: 49.781548}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &696939985
@@ -1103,8 +1059,20 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
-  m_IsOn: 1
+      m_Calls:
+      - m_Target: {fileID: 1924242461}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: ToggleMusic
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_IsOn: 0
 --- !u!1 &802080104
 GameObject:
   m_ObjectHideFlags: 0
@@ -1313,7 +1281,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 894155101}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1924242461}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: DeactivateMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &894155101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1806,7 +1786,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.5254902}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1987,7 +1967,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1534318202}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1924242465}
+        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
+        m_MethodName: QuitGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1534318202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2159,7 +2151,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TOGGLE MUSIC
+  m_text: TOGGLE SOUND
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2236,3 +2228,135 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1822156415}
   m_CullTransparentMesh: 0
+--- !u!1 &1924242460
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1924242464}
+  - component: {fileID: 1924242466}
+  - component: {fileID: 1924242463}
+  - component: {fileID: 1924242462}
+  - component: {fileID: 1924242461}
+  - component: {fileID: 1924242465}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1924242461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924242460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4985c8824b18ff741ab22561e6026340, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pauseMenuUI: {fileID: 571947490}
+  isPaused: 0
+  isMuted: 0
+--- !u!114 &1924242462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924242460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80b8b026e79e4bf4bb39cf0f68c32482, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1924242463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924242460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6162fbd56b6bddf4ea8dc11c822eef99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 0}
+  continueText: {fileID: 57146101}
+  levelText: {fileID: 681897693}
+--- !u!4 &1924242464
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924242460}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 116.78259, y: -7.652624, z: 7.076052}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1924242465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924242460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df9933225d5c41845944020341aae02a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1924242466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924242460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de58d149f2530274c860c566cd9d3dd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dirt_breaking: {fileID: 519420033}
+  rock_falling: {fileID: 519420034}
+  levelName: WorldMap
+  tileSize: 50
+  invalidTile: 0
+  dirtTile: 68
+  glassTile: 71
+  heroTile: 72
+  rockTile: 82
+  nothingTile: 78
+  warpTile: 87
+  heroOnGlassTile: 0
+  shatteredGlassTile: 0
+  keyPressInterval: 0.2
+  glassColor: {r: 0, g: 0, b: 0, a: 0}
+  dirtSprite: {fileID: 21300000, guid: efeea8983134ec94ab65861203c4c21d, type: 3}
+  heroBlock: {fileID: 3756469499009107029, guid: 7038ba7c92791614ea6752dd359f3062, type: 3}
+  rockBlock: {fileID: 5244155351154864330, guid: 8d22178088b995047a6b8414df66b49d, type: 3}
+  glassBlock: {fileID: 45265408147765129, guid: ba2907c5d40902647aabcf1d167356dd, type: 3}
+  nothingSprite: {fileID: 21300000, guid: 9b0a04cd820a5534c860b793d79cc749, type: 3}
+  incompleteWarpSprite: {fileID: 21300000, guid: 4528a085d59de9543be7fe8d3c944376, type: 3}
+  warpBlock: {fileID: 7724119164907283455, guid: ac67d7f6161f85b498a695d1798fbd81, type: 3}
+  completeWarpBlock: {fileID: 8015926831050131109, guid: aacea565a20ba3546a7bfd657ffe0b1b, type: 3}
+  userInputKeys: 11010000130100001201000014010000
+  levels: []
+  levelNames:
+  - WorldMap
+  - level1
+  - level2
+  - level3
+  rockFallInterval: 0

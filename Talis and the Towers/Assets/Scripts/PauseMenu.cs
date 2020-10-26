@@ -4,46 +4,45 @@ using UnityEngine;
 
 public class PauseMenu : MonoBehaviour
 {
-    private GameObject pauseMenuUI;
-    private bool isPaused;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private GameObject pauseMenuUI;
+    [SerializeField] private bool isPaused;
+    [SerializeField] private bool isMuted;
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("t"))
+
+        if (Input.GetKeyDown("escape"))
         {
             isPaused = !isPaused;
-            PauseGame(isPaused);
         }
 
-        if(Input.GetKeyDown("escape") && isPaused)
+        if (isPaused)
         {
-            isPaused = !isPaused;
-            PauseGame(isPaused);
+            ActivateMenu();
+        } else {
+            DeactivateMenu();
         }
     } 
 
-    void PauseGame(bool isPaused)
+    public void ActivateMenu()
     {
-        if(isPaused)
-        {
-            Time.timeScale = 0;
+        Time.timeScale = 0;
+        //AudioListener.pause = true;
+        pauseMenuUI.SetActive(true);
+    }
 
-            AudioListener.pause = true;
-            pauseMenuUI.SetActive(true);
+    public void DeactivateMenu()
+    {
+        Time.timeScale = 1;
+        //AudioListener.pause = false;
+        pauseMenuUI.SetActive(false);
+        isPaused = false;
+    }
 
-        } 
-        else
-        {
-            Time.timeScale = 1;
-            AudioListener.pause = false;
-            pauseMenuUI.SetActive(false);
-        }
+
+    public void ToggleMusic(bool _isMuted)
+    {     
+        AudioListener.pause = _isMuted;
     }
 }

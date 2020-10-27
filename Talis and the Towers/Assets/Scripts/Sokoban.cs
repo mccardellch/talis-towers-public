@@ -17,6 +17,8 @@ public class Level : MonoBehaviour
 //It is on GitHub with a MIT license.
 public class Sokoban : MonoBehaviour
 {
+    [SerializeField] private GameObject deathMenuUI;
+
     // to play the sfx
     public AudioSource dirt_breaking;
     public AudioSource rock_falling;
@@ -664,6 +666,7 @@ public class Sokoban : MonoBehaviour
     {
         //Application.LoadLevel(0);
         //SceneManager.LoadScene(0);
+        deathMenuUI.SetActive(false);
         ClearLevel();//remove all the objects from the current level
         ParseLevel();//load text file & parse our level 2d array
         CreateLevel();//create the new level based on the array

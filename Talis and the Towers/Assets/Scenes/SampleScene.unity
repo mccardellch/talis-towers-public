@@ -4064,6 +4064,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de58d149f2530274c860c566cd9d3dd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deathMenuUI: {fileID: 1259003042}
   dirt_breaking: {fileID: 519420033}
   rock_falling: {fileID: 519420034}
   levelName: WorldMap

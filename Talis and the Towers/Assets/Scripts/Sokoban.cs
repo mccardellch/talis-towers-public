@@ -90,7 +90,6 @@ public class Sokoban : MonoBehaviour
         occupants = new Dictionary<GameObject, Vector2>();
         rockFallInterval = 0.3f;
         rockFallTimer = 0.3f;
-        playerFacing = playerDirections.right;
 
         levels = new Level[levelNames.Length];
         //levels and levelNames have the same length, but levels length is not defined so levelNames is used.
@@ -139,7 +138,7 @@ public class Sokoban : MonoBehaviour
         //calculate the offset to align whole level to scene middle
         middleOffset.x = cols * tileSize * 0.5f - tileSize * 0.5f;
         middleOffset.y = rows * tileSize * 0.5f - tileSize * 0.5f; ;
-        //GameObject tile;
+        GameObject tile;
         SpriteRenderer sr;
         Animator anim; //used to control the speeds of animations
         GameObject rock;

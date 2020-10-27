@@ -236,7 +236,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 25, y: -11.000015}
+  m_AnchoredPosition: {x: 25, y: -11}
   m_SizeDelta: {x: 160, y: 228.45384}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &75934874
@@ -2359,5 +2359,4 @@ MonoBehaviour:
   - level1
   - level2
   - level3
-  - level4
   rockFallInterval: 0

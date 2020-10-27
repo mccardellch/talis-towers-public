@@ -8,10 +8,14 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] private bool isPaused;
     [SerializeField] private bool isMuted;
 
+    void Start()
+    {
+        pauseMenuUI.SetActive(false);
+    }
+
     // Update is called once per frame
     void Update()
     {
-
         if (Input.GetKeyDown("escape"))
         {
             isPaused = !isPaused;
@@ -28,14 +32,12 @@ public class PauseMenu : MonoBehaviour
     public void ActivateMenu()
     {
         Time.timeScale = 0;
-        //AudioListener.pause = true;
         pauseMenuUI.SetActive(true);
     }
 
     public void DeactivateMenu()
     {
         Time.timeScale = 1;
-        //AudioListener.pause = false;
         pauseMenuUI.SetActive(false);
         isPaused = false;
     }
@@ -45,4 +47,6 @@ public class PauseMenu : MonoBehaviour
     {     
         AudioListener.pause = _isMuted;
     }
+
+     
 }

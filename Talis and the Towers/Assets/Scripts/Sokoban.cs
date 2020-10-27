@@ -147,6 +147,20 @@ public class Sokoban : MonoBehaviour
         GameObject warp;
         glassCount = 0;
         int warpind = 1;
+        int levelsComplete = 0;
+        int levelsToDraw = 0;
+        //Calculates the amount of levels completed, which is used to draw the correct amount of warp tiles.
+        for (int i = 0; i < levels.Length; i++)
+        {
+            if (levels[i].complete == true)
+            {
+                levelsComplete += 1;
+            }
+        }
+        if (levelsComplete <= 2) { levelsToDraw = 3; }
+        else if (levelsComplete <=5) { levelsToDraw = 4; }
+
+
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < cols; j++)
@@ -193,11 +207,11 @@ public class Sokoban : MonoBehaviour
                             sr.sprite = dirtSprite;
                             sr.sortingOrder = 0;
                             ground.transform.position = GetScreenPointFromLevelIndices(i, j);
-                            occupants.Add(ground, new Vector2(i, j));//store the level indices of hero in dict
+                            occupants.Add(ground, new Vector2(i, j));//store the level indices of the dirt in dict
                         }
                         else if (val == warpTile)
                         {//Warp tile
-                            if (warpind < levels.Length)
+                            if (warpind <= levelsToDraw)
                             {
                                 //UnityEngine.Debug.Log("Should be warp");
                                 if (levels[warpind].complete)
@@ -205,18 +219,19 @@ public class Sokoban : MonoBehaviour
                                     warp = Instantiate(completeWarpBlock);
                                 }
                                 else warp = Instantiate(warpBlock);
-                                warp.name=("Warp_" + levels[warpind].name);
+
+                                warp.name = ("Warp_" + levels[warpind].name);
                                 warp.transform.localScale = Vector2.one * (tileSize - 1);
                                 sr = warp.GetComponent<SpriteRenderer>();
-                                anim=warp.GetComponent<Animator>();
-                                anim.speed=0.2f;
-                                //sr.sprite = incompleteWarpSprite;
+                                anim = warp.GetComponent<Animator>();
+                                anim.speed = 0.2f;
 
                                 sr.sortingOrder = 0;
                                 warp.transform.position = GetScreenPointFromLevelIndices(i, j);
-                                occupants.Add(warp, new Vector2(i, j));//store the level indices of hero in dict
+                                occupants.Add(warp, new Vector2(i, j));//store the level indices of the warp in dict
                                 warpind++;
                             }
+                            else levelData[i, j] = nothingTile;
                         }
                         else if (val == nothingTile)
                         {
@@ -360,9 +375,9 @@ public class Sokoban : MonoBehaviour
                     // play the dirt sfx
                     dirt_breaking.Play();
                 }
-                else if (levelData[(int)heroPos.x, (int)heroPos.y] == glassTile)
+                else if (levelData[(int)heroPos.x, (int)heroPos.y] == glassTile) //this is never called because the the if statement doesn't execute is IsOccupiedByGlass is true.
                 {//moving onto a glass tile
-                    levelData[(int)heroPos.x, (int)heroPos.y] = heroOnGlassTile;
+                    //levelData[(int)heroPos.x, (int)heroPos.y] = heroOnGlassTile;
                 }
                 //hero.transform.position = GetScreenPointFromLevelIndices((int)heroPos.x, (int)heroPos.y);
                 occupants[hero] = heroPos;
@@ -376,7 +391,7 @@ public class Sokoban : MonoBehaviour
                 nextPos = GetNextPositionAlong(heroPos, direction);
                 if (IsValidPosition(nextPos))
                 {
-                    if (!IsOccuppiedByDirt(nextPos))
+                    if (!IsOccuppiedByDirt(nextPos) && !IsOccuppiedByRock(nextPos))
                     {//The next two tiles are empty, so we move the rock and the hero.
                         GameObject rock = GetOccupantAtPosition(heroPos);//find the rock at this position
                         if (rock == null) UnityEngine.Debug.Log("no rock");
@@ -527,7 +542,7 @@ public class Sokoban : MonoBehaviour
         CreateLevel();//create the new level based on the array
     }
 
-    //It would be more explicit to say glass tiles shattered, though I don't think this could change 
+    //This seems to be getting the actual hero occuppant instead of the warp tile, but only when in a different row.
     private void CheckWarp()
     {
         Vector2 HeroPos;

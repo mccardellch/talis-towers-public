@@ -1,5 +1,5 @@
-n,n,n,n,n,n,d,d,d,n
-n,n,r,n,n,n,d,d,d,n
+d,d,d,d,d,d,d,d,d,n
+d,n,r,n,n,n,d,d,d,n
 d,d,d,n,n,n,r,d,d,n
 d,r,d,n,g,d,d,d,d,n
 d,d,d,d,d,d,d,d,d,n

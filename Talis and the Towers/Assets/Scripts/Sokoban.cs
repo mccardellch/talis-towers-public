@@ -262,6 +262,16 @@ public class Sokoban : MonoBehaviour
             Destroy(occupant.Key);
         }
         occupants.Clear();
+
+        string nameSub;
+        foreach (GameObject o in UnityEngine.Object.FindObjectsOfType<GameObject>())
+        {
+            nameSub = o.name.Substring(0, 4);
+            if (nameSub=="tile")
+            {
+                Destroy(o);
+            }
+        }
     }
 
     void Update()

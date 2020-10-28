@@ -280,7 +280,7 @@ public class Sokoban : MonoBehaviour
         Vector2 trueHeroPos;
         Vector2 trueRockPos;
         occupants.TryGetValue(hero, out trueHeroPos);
-        hero.transform.position = new Vector2(UnityEngine.Mathf.Lerp(hero.transform.position.x, GetScreenPointFromLevelIndices((int)trueHeroPos.x, (int)trueHeroPos.y).x, .05f), UnityEngine.Mathf.Lerp(hero.transform.position.y, GetScreenPointFromLevelIndices((int)trueHeroPos.x, (int)trueHeroPos.y).y, .05f));
+        hero.transform.position = new Vector2(UnityEngine.Mathf.Lerp(hero.transform.position.x, GetScreenPointFromLevelIndices((int)trueHeroPos.x, (int)trueHeroPos.y).x, .25f), UnityEngine.Mathf.Lerp(hero.transform.position.y, GetScreenPointFromLevelIndices((int)trueHeroPos.x, (int)trueHeroPos.y).y, .25f));
    
         foreach (KeyValuePair<GameObject, Vector2> occupant in occupants)
         {
@@ -630,15 +630,29 @@ public class Sokoban : MonoBehaviour
             occupants.Remove(empty);
             Destroy(empty);
         }
-        GameObject tile;
-        tile = new GameObject("tile" + objPos.x.ToString() + "_" + objPos.y.ToString());//create new tile
-        SpriteRenderer sr;
-        tile.transform.localScale = Vector2.one * (tileSize - 1);//set tile size
-        sr = tile.AddComponent<SpriteRenderer>();//add a sprite renderer
-        sr.sprite = nothingSprite;//assign tile sprite
-        sr.sortingOrder = 0;
-        tile.transform.position = GetScreenPointFromLevelIndices((int)objPos.x, (int)objPos.y);//place in scene based on level indices
-        //occupants.Add(tile, new Vector2((int)objPos.x, (int)objPos.y));//store the level indices of the empty tile in dict
+        string nameSub;
+        string tileName= ("tile" + objPos.x.ToString() + "_" + objPos.y.ToString());
+        bool createTile = true;
+        foreach (GameObject o in UnityEngine.Object.FindObjectsOfType<GameObject>())
+        {
+            nameSub = o.name;
+            if (nameSub == tileName)
+            {
+                createTile = false;
+            }
+        }
+        if (createTile)
+        {
+            GameObject tile;
+            tile = new GameObject("tile" + objPos.x.ToString() + "_" + objPos.y.ToString());//create new tile
+            SpriteRenderer sr;
+            tile.transform.localScale = Vector2.one * (tileSize - 1);//set tile size
+            sr = tile.AddComponent<SpriteRenderer>();//add a sprite renderer
+            sr.sprite = nothingSprite;//assign tile sprite
+            sr.sortingOrder = 0;
+            tile.transform.position = GetScreenPointFromLevelIndices((int)objPos.x, (int)objPos.y);//place in scene based on level indices
+                                                                                                   //occupants.Add(tile, new Vector2((int)objPos.x, (int)objPos.y));//store the level indices of the empty tile in dict
+        }
     }
 
     private bool IsOccuppiedByDirt(Vector2 objPos)

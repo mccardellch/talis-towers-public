@@ -1,5 +1,5 @@
 D,W,D,W,D,W,D
 D,N,N,N,N,N,D
-D,W,N,H,N,N,D
+D,W,N,H,N,W,D
 D,N,N,N,N,N,D
 D,D,D,D,D,D,D

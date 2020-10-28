@@ -22,6 +22,7 @@ public class Sokoban : MonoBehaviour
     // to play the sfx
     public AudioSource dirt_breaking;
     public AudioSource rock_falling;
+    public AudioSource warp_warping;
 
     public string levelName;//name of the text file in resources folder
     public float tileSize;//we are using square tiles tileSize x tileSize
@@ -67,6 +68,7 @@ public class Sokoban : MonoBehaviour
     int currentLevelIndex = 0;
 
     bool gameOver;
+    bool heroIsDead;
     //It'd be better to make something like player.rotDegrees, but I don't want to look up how to do that in C# atm.
     int playerRotDegrees;
     enum playerDirections
@@ -85,7 +87,7 @@ public class Sokoban : MonoBehaviour
 
     void Start()
     {
-        
+        heroIsDead = false;
         gameOver = false;
         rockIsFalling = false;
         glassCount = 0;
@@ -148,6 +150,7 @@ public class Sokoban : MonoBehaviour
         GameObject glass;
         GameObject ground;
         GameObject warp;
+        GameObject tile;
         glassCount = 0;
         int warpind = 1;
         int levelsComplete = 0;
@@ -160,9 +163,10 @@ public class Sokoban : MonoBehaviour
                 levelsComplete += 1;
             }
         }
-        if (levelsComplete <= 2) { levelsToDraw = 3; }
-        else if (levelsComplete <=5) { levelsToDraw = 4; }
-
+        if (levelsComplete <= 0) { levelsToDraw = 1; }
+        else if (levelsComplete <= 1) { levelsToDraw = 2; }
+        else if (levelsComplete <= 3) { levelsToDraw = 4; }
+        else if (levelsComplete > 3) { levelsToDraw = 5; }
 
         for (int i = 0; i < rows; i++)
         {
@@ -176,7 +180,7 @@ public class Sokoban : MonoBehaviour
                         glass = Instantiate(glassBlock);
                         //glass.name = ("Glass_" + i.ToString() + j.ToString());
                         sr = glass.GetComponent<SpriteRenderer>();
-                        sr.sortingOrder = 1;
+                        sr.sortingOrder = 2;
                         glass.transform.localScale = Vector2.one * (tileSize - 1);
                         glass.transform.position = GetScreenPointFromLevelIndices(i, j);
                         occupants.Add(glass, new Vector2(i, j));//store the level indices of the glass in dict
@@ -189,7 +193,7 @@ public class Sokoban : MonoBehaviour
                             hero = Instantiate(heroBlock);
                             hero.transform.localScale = Vector2.one * (tileSize - 1);
                             sr = hero.GetComponent<SpriteRenderer>();
-                            sr.sortingOrder = 1;
+                            sr.sortingOrder = 2;
                             hero.transform.position = GetScreenPointFromLevelIndices(i, j);
                             occupants.Add(hero, new Vector2(i, j));//store the level indices of hero in dict
                         }
@@ -198,7 +202,7 @@ public class Sokoban : MonoBehaviour
                             rock = Instantiate(rockBlock);
                             rock.transform.localScale = Vector2.one * (tileSize - 1);
                             sr = rock.GetComponent<SpriteRenderer>();
-                            sr.sortingOrder = 1;//rock should be above ground tile, though this never comes up because the dirt tile would have been deleted.
+                            sr.sortingOrder = 2;//rock should be above ground tile, though this never comes up because the dirt tile would have been deleted.
                             rock.transform.position = GetScreenPointFromLevelIndices(i, j);
                             occupants.Add(rock, new Vector2(i, j));//store the level indices of rock in dict
                         }
@@ -208,7 +212,7 @@ public class Sokoban : MonoBehaviour
                             ground.transform.localScale = Vector2.one * (tileSize - 1);
                             sr = ground.AddComponent<SpriteRenderer>();
                             sr.sprite = dirtSprite;
-                            sr.sortingOrder = 0;
+                            sr.sortingOrder = 1;
                             ground.transform.position = GetScreenPointFromLevelIndices(i, j);
                             occupants.Add(ground, new Vector2(i, j));//store the level indices of the dirt in dict
                         }
@@ -229,26 +233,24 @@ public class Sokoban : MonoBehaviour
                                 anim = warp.GetComponent<Animator>();
                                 anim.speed = 0.2f;
 
-                                sr.sortingOrder = 0;
+                                sr.sortingOrder = 2;
                                 warp.transform.position = GetScreenPointFromLevelIndices(i, j);
                                 occupants.Add(warp, new Vector2(i, j));//store the level indices of the warp in dict
                                 warpind++;
                             }
-                            else levelData[i, j] = nothingTile;
-                        }
-                        else if (val == nothingTile)
-                        {
-                            /* This is all commented out because nothingTile is just nothing at all for now. It is not a sprite.
-							tile = new GameObject("tile" + i.ToString() + "_" + j.ToString());//create new tile
-							tile.transform.localScale = Vector2.one * (tileSize - 1);//set tile size
-							sr = tile.AddComponent<SpriteRenderer>();//add a sprite renderer
-							sr.sprite = nothingSprite;//assign tile sprite
-							sr.sortingOrder = 0;
-							tile.transform.position = GetScreenPointFromLevelIndices(i, j);//place in scene based on level indices
-							occupants.Add(tile, new Vector2(i, j));//store the level indices of the empty tile in dict
-							*/
+                            else { levelData[i, j] = nothingTile; val = nothingTile; }
                         }
                     }
+                        if (val == nothingTile)
+                        {
+                            tile = new GameObject("tile" + i.ToString() + "_" + j.ToString());//create new tile
+                            tile.transform.localScale = Vector2.one * (tileSize - 1);//set tile size
+                            sr = tile.AddComponent<SpriteRenderer>();//add a sprite renderer
+                            sr.sprite = nothingSprite;//assign tile sprite
+                            sr.sortingOrder = 0;
+                            tile.transform.position = GetScreenPointFromLevelIndices(i, j);//place in scene based on level indices
+                            //occupants.Add(tile, new Vector2(i, j));//store the level indices of the empty tile in dict
+                        }
                 }
             }
         }
@@ -305,31 +307,34 @@ public class Sokoban : MonoBehaviour
     {
         //Changes which way the player is facing based on the key pressed, stored in a variable and shown through their rotation.
         //Player moves with arrow keys.
-        if (Input.GetKeyDown("w") || Input.GetKeyDown("up"))
+        if (!heroIsDead)
         {
-            TryMoveHero(0);//up
-            //hero.transform.up = Vector3.left;
-            playerFacing = playerDirections.up;
+            if (Input.GetKeyDown("w") || Input.GetKeyDown("up"))
+            {
+                TryMoveHero(0);//up
+                               //hero.transform.up = Vector3.left;
+                playerFacing = playerDirections.up;
+            }
+            else if (Input.GetKeyDown("d") || Input.GetKeyDown("right"))
+            {
+                TryMoveHero(1);//right
+                hero.transform.right = Vector3.right;
+                playerFacing = playerDirections.right;
+            }
+            else if (Input.GetKeyDown("s") || Input.GetKeyDown("down"))
+            {
+                TryMoveHero(2);//down
+                               //hero.transform.up = Vector3.right;
+                playerFacing = playerDirections.down;
+            }
+            else if (Input.GetKeyDown("a") || Input.GetKeyDown("left"))
+            {
+                TryMoveHero(3);//left
+                hero.transform.right = Vector3.left;
+                playerFacing = playerDirections.left;
+            }
+            else keyPressInterval = 0f; //if no key is pressed this frame, make it so the user can press any key next frame to move the player.
         }
-        else if (Input.GetKeyDown("d") || Input.GetKeyDown("right"))
-        {
-            TryMoveHero(1);//right
-            hero.transform.right = Vector3.right;
-            playerFacing = playerDirections.right;
-        }
-        else if (Input.GetKeyDown("s") || Input.GetKeyDown("down"))
-        {
-            TryMoveHero(2);//down
-            //hero.transform.up = Vector3.right;
-            playerFacing = playerDirections.down;
-        }
-        else if (Input.GetKeyDown("a") || Input.GetKeyDown("left"))
-        {
-            TryMoveHero(3);//left
-            hero.transform.right = Vector3.left;
-            playerFacing = playerDirections.left;
-        }
-        else keyPressInterval = 0f; //if no key is pressed this frame, make it so the user can press any key next frame to move the player.
 
         //hero.transform.right = Vector3.forward * playerRotDegrees;
 
@@ -448,13 +453,29 @@ public class Sokoban : MonoBehaviour
         Vector2 potentialNewPos = fallingRockPosition;
         potentialNewPos.x += 1;
         rockFallTimer = rockFallInterval;
+        if (GetOccupantAtPosition(potentialNewPos) == hero) 
+        {
+            Invoke("KillPlayer", 0.5f);
+            hero.GetComponent<SpriteRenderer>().color = Color.red;
+            GameObject rock = GetOccupantAtPosition(fallingRockPosition);//find the rock at this position
+            rock.GetComponent<Animator>().enabled = true;
+            rock.GetComponent<Animator>().speed = 1;
+            rock.GetComponent<Animator>().Play("rock break");
+            Destroy(rock, 0.4f);
+            rockIsFalling = false;
+        }
         //destroy the rock if it is trying to move out of bounds
         if (!IsValidPosition(potentialNewPos))
         {
             rockIsFalling = false;
             levelData[(int)fallingRockPosition.x, (int)fallingRockPosition.y] = nothingTile;
             GameObject rock = GetOccupantAtPosition(fallingRockPosition);//find the rock at this position
-            Destroy(rock);
+            rock_falling.Play();
+
+            rock.GetComponent<Animator>().enabled = true;
+            rock.GetComponent<Animator>().speed = 1;
+            rock.GetComponent<Animator>().Play("rock break");
+            Destroy(rock, 0.4f);
             return;
         }
         //If the tile below the rock is empty, make it fall.
@@ -508,7 +529,12 @@ public class Sokoban : MonoBehaviour
             Destroy(rock, 0.4f);
         }
     }
-
+    private void KillPlayer()
+    {
+        UnityEngine.Debug.Log("TEST HEROTILE");
+        deathMenuUI.SetActive(true);
+        heroIsDead = true;
+    }
     //If all glass tiles are shattered, then the level is complete
     private void CheckCompletion()
     {
@@ -561,6 +587,7 @@ public class Sokoban : MonoBehaviour
                     currentLevelIndex = i;
                 }
             }
+            warp_warping.Play();
             ClearLevel();//remove all the objects from the current level
             ParseLevel();//load text file & parse our level 2d array
             CreateLevel();//create the new level based on the array
@@ -593,11 +620,15 @@ public class Sokoban : MonoBehaviour
             occupants.Remove(empty);
             Destroy(empty);
         }
-        else
-        {
-            //UnityEngine.Debug.Log("No empty object.");
-            //empty = new GameObject("tile" + objPos.x.ToString() + "_" + objPos.y.ToString());
-        }
+        GameObject tile;
+        tile = new GameObject("tile" + objPos.x.ToString() + "_" + objPos.y.ToString());//create new tile
+        SpriteRenderer sr;
+        tile.transform.localScale = Vector2.one * (tileSize - 1);//set tile size
+        sr = tile.AddComponent<SpriteRenderer>();//add a sprite renderer
+        sr.sprite = nothingSprite;//assign tile sprite
+        sr.sortingOrder = 0;
+        tile.transform.position = GetScreenPointFromLevelIndices((int)objPos.x, (int)objPos.y);//place in scene based on level indices
+        //occupants.Add(tile, new Vector2((int)objPos.x, (int)objPos.y));//store the level indices of the empty tile in dict
     }
 
     private bool IsOccuppiedByDirt(Vector2 objPos)
@@ -666,7 +697,9 @@ public class Sokoban : MonoBehaviour
     {
         //Application.LoadLevel(0);
         //SceneManager.LoadScene(0);
+        heroIsDead = false;
         deathMenuUI.SetActive(false);
+
         ClearLevel();//remove all the objects from the current level
         ParseLevel();//load text file & parse our level 2d array
         CreateLevel();//create the new level based on the array

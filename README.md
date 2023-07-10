@@ -1,4 +1,5 @@
-# GDD2
+# Talis and The Towers (Public)
+## Group Project from Game Design and Development 2
 
 ### Resources
 - Trello - https://trello.com/b/f6weyMMy/12th-hour-studios
